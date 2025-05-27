@@ -44,7 +44,7 @@ A simple web-based task list application built with Python (Flask) and HTML/CSS/
     ```
     The application will usually be available at `http://127.0.0.1:5000/` in your web browser.
 
-## File Structure
+## Updated File Structure
 ```
 /
 |-- app.py               # Main Flask application logic, routes, and data handling
@@ -52,7 +52,9 @@ A simple web-based task list application built with Python (Flask) and HTML/CSS/
 |   |-- index.html       # Main page to display tasks
 |   |-- add_task.html    # Form to add a new task
 |   |-- edit_task.html   # Form to edit an existing task
-|-- static/              # (Currently unused, but available for CSS/JS files)
+|-- static/
+|   |-- estilo.css       # CSS styles for the application
+|   |-- theme.js         # JavaScript for theme toggling
 |-- README.md            # This file
 ```
 

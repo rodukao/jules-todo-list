@@ -10,7 +10,6 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='estilo.css') }}">
 </head>
 <body>
-<button id="theme-toggle-button">Mudar Tema</button>
 <div class="container">
     <!-- Left Column -->
     <div class="left-column">
@@ -42,10 +41,11 @@
         </form>
         <div class="filters">
             <h2>Filtros</h2>
-            <a href="{{ url_for('view_tasks', filter='all') }}" class="active">Todas</a>
-            <a href="{{ url_for('view_tasks', filter='today') }}">Hoje</a>
-            <a href="{{ url_for('view_tasks', filter='next_7_days') }}">Próximos 7 Dias</a>
-            <a href="{{ url_for('view_tasks', filter='overdue') }}">Vencidas</a>
+            <a href="{{ url_for('view_tasks', status_filter='all', date_filter='all') }}" class="{{ 'active' if current_status_filter == 'all' and current_date_filter == 'all' else '' }}">Todas</a>
+            <a href="{{ url_for('view_tasks', status_filter='pending', date_filter='today') }}" class="{{ 'active' if current_status_filter == 'pending' and current_date_filter == 'today' else '' }}">Hoje</a>
+            <a href="{{ url_for('view_tasks', status_filter='pending', date_filter='next_7_days') }}" class="{{ 'active' if current_status_filter == 'pending' and current_date_filter == 'next_7_days' else '' }}">Próximos 7 Dias</a>
+            <a href="{{ url_for('view_tasks', status_filter='pending', date_filter='overdue') }}" class="{{ 'active' if current_status_filter == 'pending' and current_date_filter == 'overdue' else '' }}">Vencidas</a>
+            <a href="{{ url_for('view_tasks', status_filter='completed', date_filter='all') }}" class="{{ 'active' if current_status_filter == 'completed' and current_date_filter == 'all' else '' }}">Concluídas</a>
         </div>
     </div>
 
@@ -55,11 +55,18 @@
         <div class="task-list">
             {% for task in tasks %}
             <div class="task-item {% if task.status == 'Completed' %}completed{% endif %}">
-                <input type="checkbox" {% if task.status == 'Completed' %}checked{% endif %}>
+                <input type="checkbox" onchange="location.href='/toggle_complete/{{ task.id }}'" {% if task.status == 'Completed' %}checked{% endif %}>
                 <span class="task-title">{{ task.title }}</span>
                 <span class="task-date">{{ task.due_date.strftime('%b %d') if task.due_date else 'Sem Data' }}</span>
-                <span class="priority-label priority-{{ task.priority.lower() }}">{% if task.priority == 'High' %}Alta{% elif task.priority == 'Medium' %}Média{% elif task.priority == 'Low' %}Baixa{% else %}{{ task.priority }}{% endif %}</span>
-                <a href="{{ url_for('edit_task', task_id=task.id) }}" class="edit-btn">✏️</a>
+                <span class="priority-label priority-{{ task.priority.lower() }}">
+                    {% if task.priority == 'High' %}Alta{% elif task.priority == 'Medium' %}Média{% elif task.priority == 'Low' %}Baixa{% endif %}
+                </span>
+                <a href="/edit/{{ task.id }}">
+                    <img src="{{ url_for('static', filename='icons/editar.svg') }}" alt="Editar" style="width: 25px; height: 25px; margin-top: 5px; margin-left: 15px;">
+                </a>
+                <a href="/delete_task/{{ task.id }}">
+                    <img src="{{ url_for('static', filename='icons/lixeira.svg') }}" alt="Deletar" style="width: 25px; height: 25px; margin-top: 5px;">
+                </a>
             </div>
             {% endfor %}
         </div>
