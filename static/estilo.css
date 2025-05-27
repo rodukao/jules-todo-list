@@ -1,0 +1,158 @@
+body {
+    font-family: 'Open Sans', Arial, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    background-color: #ffffff;
+    color: #333333;
+}
+
+.container {
+    display: flex;
+    flex-wrap: nowrap;
+    width: 90%;
+    max-width: 1200px;
+    margin: 20px auto;
+    gap: 20px;
+}
+
+.left-column {
+    flex: 0 0 35%;
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.right-column {
+    flex: 0 0 65%;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.form-group input, .form-group textarea, .form-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-sizing: border-box;
+}
+
+.form-group textarea {
+    min-height: 80px;
+}
+
+.form-group button {
+    width: 100%;
+    background-color: #007bff;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.form-group button:hover {
+    background-color: #0056b3;
+}
+
+.filters {
+    margin-top: 20px;
+}
+
+.filters a {
+    display: block;
+    margin-bottom: 10px;
+    color: #007bff;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+.filters a.active {
+    font-weight: 600;
+    color: #0056b3;
+}
+
+.task-list h2 {
+    margin-bottom: 20px;
+}
+
+.task-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.task-item.completed {
+    background-color: #f0f0f0;
+    text-decoration: line-through;
+}
+
+.task-item .task-title {
+    flex: 1;
+    font-size: 16px;
+}
+
+.task-item .task-date {
+    font-size: 14px;
+    color: #666;
+    margin-left: 10px;
+}
+
+.task-item .priority-label {
+    font-size: 12px;
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 8px;
+    margin-left: 10px;
+}
+
+.priority-high {
+    background-color: #fdf2d0;
+}
+
+.priority-medium {
+    background-color: #f7f0d0;
+}
+
+.priority-low {
+    background-color: #fbdada;
+}
+
+.priority-overdue {
+    background-color: #f8c2c2;
+}
+
+.task-item .edit-btn {
+    margin-left: 10px;
+    cursor: pointer;
+    color: #333;
+}
+
+.task-item .edit-btn:hover {
+    color: #007bff;
+}
