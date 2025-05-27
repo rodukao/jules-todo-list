@@ -1,41 +1,42 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR"> <!-- Changed lang to pt-BR -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editar Tarefa: {{ task.title }}</title>
+    <title>Editar Tarefa: {{ task.title }}</title> <!-- Translated -->
     <link rel="stylesheet" href="{{ url_for('static', filename='estilo.css') }}">
+    <!-- Embedded <style> block will be removed -->
 </head>
 <body>
-<div class="container">
-    <h1>Editar Tarefa: {{ task.title }}</h1>
+<div class="container"> <!-- This container might need specific styling if it's different from index.html's -->
+    <h1>Editar Tarefa: {{ task.title }}</h1> <!-- Translated -->
     <form method="POST" action="{{ url_for('edit_task', task_id=task.id) }}">
         <div class="form-group">
-            <label for="title">Título:</label>
+            <label for="title">Título:</label> <!-- Translated -->
             <input type="text" id="title" name="title" value="{{ task.title }}" required>
         </div>
         <div class="form-group">
-            <label for="description">Descrição:</label>
+            <label for="description">Descrição:</label> <!-- Translated -->
             <textarea id="description" name="description" rows="4">{{ task.description or '' }}</textarea>
         </div>
         <div class="form-group">
-            <label for="due_date">Data de Vencimento:</label>
+            <label for="due_date">Data de Vencimento:</label> <!-- Translated -->
             <input type="date" id="due_date" name="due_date" value="{{ task.due_date.strftime('%Y-%m-%d') if task.due_date else '' }}">
         </div>
         <div class="form-group">
-            <label for="priority">Prioridade:</label>
+            <label for="priority">Prioridade:</label> <!-- Translated -->
             <select id="priority" name="priority">
-                <option value="High" {% if task.priority == 'High' %}selected{% endif %}>Alta</option>
-                <option value="Medium" {% if task.priority == 'Medium' %}selected{% endif %}>Média</option>
-                <option value="Low" {% if task.priority == 'Low' %}selected{% endif %}>Baixa</option>
+                <option value="High" {% if task.priority == 'High' %}selected{% endif %}>Alta</option> <!-- Translated -->
+                <option value="Medium" {% if task.priority == 'Medium' %}selected{% endif %}>Média</option> <!-- Translated -->
+                <option value="Low" {% if task.priority == 'Low' %}selected{% endif %}>Baixa</option> <!-- Translated -->
             </select>
         </div>
         <div class="form-actions">
-            <button type="submit">Salvar Alterações</button>
-            <a href="{{ url_for('view_tasks') }}" class="button-like">Cancelar</a>
+            <button type="submit">Salvar Alterações</button> <!-- Translated -->
+            <a href="{{ url_for('view_tasks') }}" class="button-like">Cancelar</a> <!-- Translated -->
         </div>
     </form>
 </div>
-<script src="{{ url_for('static', filename='theme.js') }}" defer></script>
+<script src="{{ url_for('static', filename='theme.js') }}" defer></script> <!-- Ensure theme script is present -->
 </body>
 </html>
