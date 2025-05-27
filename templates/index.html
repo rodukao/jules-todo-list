@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Tasks</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0; /* Reset margin for body */
+            padding: 0; /* Reset padding for body */
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            width: 90%;
+            max-width: 1200px; /* Increased max-width for better layout on larger screens */
+            margin: 20px auto; /* Centering the container */
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px; /* Slightly larger radius */
+            box-shadow: 0 0 15px rgba(0,0,0,0.15); /* Slightly more pronounced shadow */
+        }
+        h1 {
+            color: #333;
+            text-align: center; /* Center main heading */
+            margin-bottom: 20px;
+        }
+        a {
+            color: #007bff;
+            text-decoration: none;
+            margin: 0 5px; /* Add some margin to links for spacing */
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        button, input[type="submit"] {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1em; /* Consistent font size */
+        }
+        button:hover, input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        input[type="text"], input[type="date"], textarea, select {
+            padding: 10px; /* Increased padding */
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 95%; /* Adjusted width */
+            max-width: 400px;
+            box-sizing: border-box; /* Include padding and border in the element's total width and height */
+        }
+        textarea {
+            min-height: 80px; /* Minimum height for textarea */
+        }
+        .controls-section, .filter-sort-info, .task-list-header {
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee; /* Separator lines */
+        }
+        .controls-section div { /* Spacing for filter/sort groups */
+            margin-bottom: 10px;
+        }
+        .search-form input[type="text"] {
+            margin-right: 10px; /* Space between search input and button */
+        }
+        .task-item {
+            border: 1px solid #ddd; /* Add border to task items */
+            background-color: #fff; /* Ensure task items have a white background */
+            padding: 15px; /* Increased padding */
+            margin-bottom: 15px;
+            border-radius: 4px; /* Rounded corners for task items */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* Subtle shadow for task items */
+            /* Priority borders are handled by specific classes below */
+        }
+        .task-item.priority-high {
+            border-left: 5px solid red;
+        }
+        .task-item.priority-medium {
+            border-left: 5px solid orange;
+        }
+        .task-item.priority-low {
+            border-left: 5px solid green;
+        }
+        .overdue-task .due-date-text {
+            color: red;
+            font-weight: bold;
+        }
+        .task-item.status-completed {
+            background-color: #e9e9e9; /* Slightly different shade for completed */
+            text-decoration: line-through;
+            opacity: 0.8; /* Slightly more opaque */
+        }
+        .task-item.status-completed strong,
+        .task-item.status-completed .due-date-text {
+            text-decoration: line-through;
+        }
+        .task-actions {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #eee; /* Separator within task item */
+        }
+        .task-actions a, .task-actions button {
+            margin-right: 8px; /* Space out actions */
+        }
+        .task-actions form {
+            display: inline; /* Keep delete form inline */
+        }
+        .no-tasks {
+            text-align: center;
+            padding: 20px;
+            color: #777;
+        }
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
+                width: 95%;
+                margin: 10px auto;
+                padding: 15px;
+            }
+            input[type="text"], input[type="date"], textarea, select {
+                width: 100%; /* Full width on smaller screens */
+            }
+            .controls-section a, .controls-section button { /* Stack controls on smaller screens */
+                display: block;
+                margin-bottom: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>My Tasks</h1>
+    <p style="text-align: center;"><a href="{{ url_for('add_task') }}" class="button-like">Add New Task</a></p>
+
+    <div class="controls-section search-form">
+        <form method="GET" action="{{ url_for('view_tasks') }}">
+            <input type="text" name="search_query" placeholder="Search tasks..." value="{{ current_search_query }}">
+            <input type="hidden" name="status_filter" value="{{ current_status_filter }}">
+            <input type="hidden" name="date_filter" value="{{ current_date_filter }}">
+            <input type="hidden" name="sort_by" value="{{ current_sort_by }}">
+            <input type="hidden" name="order" value="{{ current_order }}">
+            <button type="submit">Search</button>
+            {% if current_search_query %}
+                <a href="{{ url_for('view_tasks', status_filter=current_status_filter, date_filter=current_date_filter, sort_by=current_sort_by, order=current_order, search_query='') }}">Clear Search</a>
+            {% endif %}
+        </form>
+    </div>
+
+    <div class="controls-section">
+        <div>
+            Show:
+            <a href="{{ url_for('view_tasks', status_filter='all', date_filter=current_date_filter, sort_by=current_sort_by, order=current_order, search_query=current_search_query) }}">All Tasks</a> |
+            <a href="{{ url_for('view_tasks', status_filter='pending', date_filter=current_date_filter, sort_by=current_sort_by, order=current_order, search_query=current_search_query) }}">Pending</a> |
+            <a href="{{ url_for('view_tasks', status_filter='completed', date_filter=current_date_filter, sort_by=current_sort_by, order=current_order, search_query=current_search_query) }}">Completed</a>
+        </div>
+        <div>
+            Due:
+            <a href="{{ url_for('view_tasks', date_filter='all', status_filter=current_status_filter, sort_by=current_sort_by, order=current_order, search_query=current_search_query) }}">All Dates</a> |
+            <a href="{{ url_for('view_tasks', date_filter='today', status_filter=current_status_filter, sort_by=current_sort_by, order=current_order, search_query=current_search_query) }}">Today</a> |
+            <a href="{{ url_for('view_tasks', date_filter='tomorrow', status_filter=current_status_filter, sort_by=current_sort_by, order=current_order, search_query=current_search_query) }}">Tomorrow</a> |
+            <a href="{{ url_for('view_tasks', date_filter='next_7_days', status_filter=current_status_filter, sort_by=current_sort_by, order=current_order, search_query=current_search_query) }}">Next 7 Days</a> |
+            <a href="{{ url_for('view_tasks', date_filter='overdue', status_filter=current_status_filter, sort_by=current_sort_by, order=current_order, search_query=current_search_query) }}">Overdue</a>
+        </div>
+    </div>
+    
+    <div class="controls-section">
+        <div>
+            Sort by:
+            <a href="{{ url_for('view_tasks', sort_by='due_date', order='asc', status_filter=current_status_filter, date_filter=current_date_filter, search_query=current_search_query) }}">Due Date (Asc)</a> |
+            <a href="{{ url_for('view_tasks', sort_by='due_date', order='desc', status_filter=current_status_filter, date_filter=current_date_filter, search_query=current_search_query) }}">Due Date (Desc)</a> |
+            <a href="{{ url_for('view_tasks', sort_by='priority', order='asc', status_filter=current_status_filter, date_filter=current_date_filter, search_query=current_search_query) }}">Priority (Asc)</a> |
+            <a href="{{ url_for('view_tasks', sort_by='priority', order='desc', status_filter=current_status_filter, date_filter=current_date_filter, search_query=current_search_query) }}">Priority (Desc)</a> |
+            <a href="{{ url_for('view_tasks', sort_by='created_at', order='asc', status_filter=current_status_filter, date_filter=current_date_filter, search_query=current_search_query) }}">Creation (Asc)</a> |
+            <a href="{{ url_for('view_tasks', sort_by='created_at', order='desc', status_filter=current_status_filter, date_filter=current_date_filter, search_query=current_search_query) }}">Creation (Desc)</a>
+        </div>
+    </div>
+
+    <div class="filter-sort-info">
+        <p>Showing: <strong>{{ current_status_filter }}</strong> tasks, Due: <strong>{{ current_date_filter }}</strong> {% if current_search_query %}, Searched for: <strong>"{{ current_search_query }}"</strong>{% endif %}</p>
+        <p>Currently sorting by: <strong>{{ current_sort_by }} ({{ current_order }})</strong></p>
+    </div>
+    
+    <hr class="task-list-header">
+
+    {% if tasks %}
+        <div>
+            {% for task in tasks %}
+                {% set priority_class = 'priority-' + (task.priority.lower() if task.priority in ['High', 'Medium', 'Low'] else 'medium') %}
+                {% set is_overdue = task.due_date and task.due_date < today and task.status == 'Pending' %}
+                {% set is_completed = task.status == 'Completed' %}
+                <div class="task-item {{ priority_class }} {% if is_overdue %}overdue-task{% endif %} {% if is_completed %}status-completed{% endif %}">
+                    <h3>{{ task.title }}</h3>
+                    <p><strong>Priority:</strong> {{ task.priority }}</p>
+                    {% if task.due_date %}
+                        <p><span class="due-date-text"><strong>Due Date:</strong> {{ task.due_date.strftime('%A, %B %d, %Y') }}</span></p>
+                    {% else %}
+                        <p><strong>Due Date:</strong> Not set</p>
+                    {% endif %}
+                    <p><strong>Status:</strong> {{ task.status }}</p>
+                    {% if task.description %}
+                        <p><strong>Description:</strong> {{ task.description }}</p>
+                    {% endif %}
+                    <p><small>Created: {{ task.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</small></p>
+                    <div class="task-actions">
+                        <a href="{{ url_for('toggle_complete', task_id=task.id) }}">
+                            {% if task.status == 'Pending' %}Mark as Completed{% else %}Mark as Pending{% endif %}
+                        </a>
+                        <a href="{{ url_for('edit_task', task_id=task.id) }}">Edit</a>
+                        <form method="POST" action="{{ url_for('delete_task', task_id=task.id) }}">
+                            <button type="submit" onclick="return confirm('Are you sure you want to delete this task?');">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="no-tasks">No tasks found for the current filters. Try adjusting your search or filter settings, or add a new task!</p>
+    {% endif %}
+</div>
+</body>
+</html>
