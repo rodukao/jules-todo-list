@@ -1,138 +1,41 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add New Task</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-            color: #333;
-        }
-        .container {
-            width: 90%;
-            max-width: 700px; /* Adjusted for typical form width */
-            margin: 20px auto;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.15);
-        }
-        h1 {
-            color: #333;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        a {
-            color: #007bff;
-            text-decoration: none;
-            margin: 0 5px;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
-        button, input[type="submit"] {
-            background-color: #007bff;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 1em;
-            margin-top: 10px; /* Added margin */
-        }
-        button:hover, input[type="submit"]:hover {
-            background-color: #0056b3;
-        }
-        input[type="text"], input[type="date"], textarea, select {
-            padding: 10px;
-            margin-bottom: 10px; /* For spacing between fields */
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            width: 100%; /* Full width within form context */
-            box-sizing: border-box;
-        }
-        textarea {
-            min-height: 80px;
-        }
-        label {
-            display: block; /* Ensure labels are on their own line */
-            margin-bottom: 5px; /* Space between label and input */
-            font-weight: bold;
-        }
-        .form-group {
-            margin-bottom: 15px; /* Space between form groups */
-        }
-        .form-actions { /* For submit/cancel buttons */
-            margin-top: 20px;
-            text-align: left; /* Align actions to the left */
-        }
-         .button-like { /* For cancel link if styled as button */
-            display: inline-block;
-            background-color: #6c757d; /* Secondary button color */
-            color: white;
-            padding: 10px 15px;
-            border-radius: 4px;
-            text-decoration: none;
-            margin-left: 10px;
-        }
-        .button-like:hover {
-            background-color: #5a6268;
-            text-decoration: none;
-        }
-
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-            .container {
-                width: 95%;
-                margin: 10px auto;
-                padding: 15px;
-            }
-            input[type="text"], input[type="date"], textarea, select, button, input[type="submit"], .button-like {
-                width: 100%; /* Full width buttons and inputs on smaller screens */
-                margin-left: 0; /* Reset margin for stacked items */
-                margin-right: 0; /* Reset margin for stacked items */
-                margin-bottom: 10px; /* Space between stacked buttons/inputs */
-            }
-            .form-actions button, .form-actions .button-like {
-                 display: block; /* Stack buttons in form actions */
-            }
-        }
-    </style>
+    <title>Adicionar Nova Tarefa</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='estilo.css') }}">
 </head>
 <body>
 <div class="container">
-    <h1>Add New Task</h1>
+    <h1>Adicionar Nova Tarefa</h1>
     <form method="POST" action="{{ url_for('add_task') }}">
         <div class="form-group">
-            <label for="title">Title:</label>
+            <label for="title">Título:</label>
             <input type="text" id="title" name="title" required>
         </div>
         <div class="form-group">
-            <label for="description">Description:</label>
+            <label for="description">Descrição:</label>
             <textarea id="description" name="description" rows="4"></textarea>
         </div>
         <div class="form-group">
-            <label for="due_date">Due Date:</label>
+            <label for="due_date">Data de Vencimento:</label>
             <input type="date" id="due_date" name="due_date">
         </div>
         <div class="form-group">
-            <label for="priority">Priority:</label>
+            <label for="priority">Prioridade:</label>
             <select id="priority" name="priority">
-                <option value="High">High</option>
-                <option value="Medium" selected>Medium</option>
-                <option value="Low">Low</option>
+                <option value="High">Alta</option>
+                <option value="Medium" selected>Média</option>
+                <option value="Low">Baixa</option>
             </select>
         </div>
         <div class="form-actions">
-            <button type="submit">Add Task</button>
-            <a href="{{ url_for('view_tasks') }}" class="button-like">Cancel</a>
+            <button type="submit">Adicionar Tarefa</button>
+            <a href="{{ url_for('view_tasks') }}" class="button-like">Cancelar</a>
         </div>
     </form>
 </div>
+<script src="{{ url_for('static', filename='theme.js') }}" defer></script>
 </body>
 </html>

@@ -1,68 +1,70 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Tasks</title>
+    <title>Minhas Tarefas</title>
     <!-- Importando a fonte Open Sans do Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
     <!-- Link para o arquivo CSS externo -->
     <link rel="stylesheet" href="{{ url_for('static', filename='estilo.css') }}">
 </head>
 <body>
+<button id="theme-toggle-button">Mudar Tema</button>
 <div class="container">
     <!-- Left Column -->
     <div class="left-column">
-        <h2>Add Task</h2>
+        <h2>Adicionar Tarefa</h2>
         <form method="POST" action="{{ url_for('add_task') }}">
             <div class="form-group">
-                <label for="title">Title</label>
+                <label for="title">Título</label>
                 <input type="text" id="title" name="title" required>
             </div>
             <div class="form-group">
-                <label for="description">Description</label>
+                <label for="description">Descrição</label>
                 <textarea id="description" name="description"></textarea>
             </div>
             <div class="form-group">
-                <label for="due_date">Due Date</label>
+                <label for="due_date">Data de Vencimento</label>
                 <input type="date" id="due_date" name="due_date">
             </div>
             <div class="form-group">
-                <label for="priority">Priority</label>
+                <label for="priority">Prioridade</label>
                 <select id="priority" name="priority">
-                    <option value="High" class="priority-high">High</option>
-                    <option value="Medium" class="priority-medium">Medium</option>
-                    <option value="Low" class="priority-low">Low</option>
+                    <option value="High" class="priority-high">Alta</option>
+                    <option value="Medium" class="priority-medium">Média</option>
+                    <option value="Low" class="priority-low">Baixa</option>
                 </select>
             </div>
             <div class="form-group">
-                <button type="submit">Add</button>
+                <button type="submit">Adicionar</button>
             </div>
         </form>
         <div class="filters">
-            <h2>Filters</h2>
-            <a href="{{ url_for('view_tasks', filter='all') }}" class="active">All</a>
-            <a href="{{ url_for('view_tasks', filter='today') }}">Today</a>
-            <a href="{{ url_for('view_tasks', filter='next_7_days') }}">Next 7 Days</a>
-            <a href="{{ url_for('view_tasks', filter='overdue') }}">Overdue</a>
+            <h2>Filtros</h2>
+            <a href="{{ url_for('view_tasks', filter='all') }}" class="active">Todas</a>
+            <a href="{{ url_for('view_tasks', filter='today') }}">Hoje</a>
+            <a href="{{ url_for('view_tasks', filter='next_7_days') }}">Próximos 7 Dias</a>
+            <a href="{{ url_for('view_tasks', filter='overdue') }}">Vencidas</a>
         </div>
     </div>
 
     <!-- Right Column -->
     <div class="right-column">
-        <h2>Tasks</h2>
+        <h2>Tarefas</h2>
         <div class="task-list">
             {% for task in tasks %}
             <div class="task-item {% if task.status == 'Completed' %}completed{% endif %}">
                 <input type="checkbox" {% if task.status == 'Completed' %}checked{% endif %}>
                 <span class="task-title">{{ task.title }}</span>
-                <span class="task-date">{{ task.due_date.strftime('%b %d') if task.due_date else 'No Date' }}</span>
-                <span class="priority-label priority-{{ task.priority.lower() }}">{{ task.priority }}</span>
+                <span class="task-date">{{ task.due_date.strftime('%b %d') if task.due_date else 'Sem Data' }}</span>
+                <span class="priority-label priority-{{ task.priority.lower() }}">{% if task.priority == 'High' %}Alta{% elif task.priority == 'Medium' %}Média{% elif task.priority == 'Low' %}Baixa{% else %}{{ task.priority }}{% endif %}</span>
                 <a href="{{ url_for('edit_task', task_id=task.id) }}" class="edit-btn">✏️</a>
             </div>
             {% endfor %}
         </div>
     </div>
 </div>
+<script src="{{ url_for('static', filename='theme.js') }}" defer></script>
 </body>
 </html>

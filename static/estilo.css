@@ -1,10 +1,56 @@
+:root {
+    --main-bg-color: #ffffff;
+    --primary-text-color: #333333;
+    --secondary-bg-color: #f9f9f9;
+    --shadow-color-primary: rgba(0, 0, 0, 0.1);
+    --shadow-color-secondary: rgba(0, 0, 0, 0.05);
+    --border-color: #dddddd;
+    --accent-color: #007bff;
+    --accent-color-darker: #0056b3;
+    --button-text-color: #ffffff;
+    --completed-task-bg-color: #f0f0f0;
+    --secondary-text-color: #666666;
+    --priority-high-bg: #fdf2d0;
+    --priority-medium-bg: #f7f0d0;
+    --priority-low-bg: #fbdada;
+    --priority-overdue-bg: #f8c2c2;
+    --secondary-action-bg-color: #6c757d;
+    --secondary-action-text-color: #ffffff;
+    --secondary-action-hover-bg-color: #5a6268;
+}
+
+body.dark-theme {
+    --main-bg-color: #1a1a1a;
+    --primary-text-color: #e0e0e0;
+    --secondary-bg-color: #2a2a2a;
+    --shadow-color-primary: rgba(255, 255, 255, 0.05);
+    --shadow-color-secondary: rgba(255, 255, 255, 0.03);
+    --border-color: #444444;
+    --accent-color: #009bff;
+    --accent-color-darker: #007acc;
+    --button-text-color: #ffffff; /* Assuming white text is still fine on the new accent */
+    --completed-task-bg-color: #333333;
+    --secondary-text-color: #aaaaaa;
+    --priority-high-bg: #544300;
+    --priority-medium-bg: #4f4a2b;
+    --priority-low-bg: #583232;
+    --priority-overdue-bg: #6b2828;
+    --secondary-action-bg-color: #5a5a5a;
+    --secondary-action-text-color: #e0e0e0;
+    --secondary-action-hover-bg-color: #484848;
+}
+
 body {
     font-family: 'Open Sans', Arial, sans-serif;
     line-height: 1.6;
     margin: 0;
     padding: 0;
-    background-color: #ffffff;
-    color: #333333;
+    background-color: var(--main-bg-color);
+    color: var(--primary-text-color);
+    display: flex;
+    min-height: 100vh;
+    align-items: center;
+    justify-content: center;
 }
 
 .container {
@@ -12,24 +58,24 @@ body {
     flex-wrap: nowrap;
     width: 90%;
     max-width: 1200px;
-    margin: 20px auto;
+    margin: auto;
     gap: 20px;
 }
 
 .left-column {
     flex: 0 0 35%;
-    background-color: #f9f9f9;
+    background-color: var(--secondary-bg-color);
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 5px var(--shadow-color-primary);
 }
 
 .right-column {
     flex: 0 0 65%;
-    background-color: #ffffff;
+    background-color: var(--main-bg-color);
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 5px var(--shadow-color-primary);
 }
 
 h2 {
@@ -51,7 +97,7 @@ h2 {
 .form-group input, .form-group textarea, .form-group select {
     width: 100%;
     padding: 10px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color);
     border-radius: 8px;
     box-sizing: border-box;
 }
@@ -62,8 +108,8 @@ h2 {
 
 .form-group button {
     width: 100%;
-    background-color: #007bff;
-    color: white;
+    background-color: var(--accent-color);
+    color: var(--button-text-color);
     padding: 10px 15px;
     border: none;
     border-radius: 8px;
@@ -72,7 +118,7 @@ h2 {
 }
 
 .form-group button:hover {
-    background-color: #0056b3;
+    background-color: var(--accent-color-darker);
 }
 
 .filters {
@@ -82,14 +128,14 @@ h2 {
 .filters a {
     display: block;
     margin-bottom: 10px;
-    color: #007bff;
+    color: var(--accent-color);
     text-decoration: none;
     font-size: 16px;
 }
 
 .filters a.active {
     font-weight: 600;
-    color: #0056b3;
+    color: var(--accent-color-darker);
 }
 
 .task-list h2 {
@@ -102,14 +148,14 @@ h2 {
     justify-content: space-between;
     padding: 15px;
     margin-bottom: 15px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color);
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 2px 4px var(--shadow-color-secondary);
 }
 
 .task-item.completed {
-    background-color: #f0f0f0;
-    text-decoration: line-through;
+    background-color: var(--completed-task-bg-color);
+    text-decoration: line-through; /* Will inherit text color, if text color is variablized, this will follow */
 }
 
 .task-item .task-title {
@@ -119,7 +165,7 @@ h2 {
 
 .task-item .task-date {
     font-size: 14px;
-    color: #666;
+    color: var(--secondary-text-color);
     margin-left: 10px;
 }
 
@@ -132,27 +178,59 @@ h2 {
 }
 
 .priority-high {
-    background-color: #fdf2d0;
+    background-color: var(--priority-high-bg);
 }
 
 .priority-medium {
-    background-color: #f7f0d0;
+    background-color: var(--priority-medium-bg);
 }
 
 .priority-low {
-    background-color: #fbdada;
+    background-color: var(--priority-low-bg);
 }
 
 .priority-overdue {
-    background-color: #f8c2c2;
+    background-color: var(--priority-overdue-bg);
 }
 
 .task-item .edit-btn {
     margin-left: 10px;
     cursor: pointer;
-    color: #333;
+    color: var(--primary-text-color);
 }
 
 .task-item .edit-btn:hover {
-    color: #007bff;
+    color: var(--accent-color);
+}
+
+#theme-toggle-button {
+    position: fixed; /* Or absolute, depending on desired fixed position */
+    top: 10px;
+    right: 10px;
+    padding: 8px 15px;
+    background-color: var(--secondary-bg-color);
+    color: var(--primary-text-color);
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 1000; /* Ensure it's above other elements */
+}
+#theme-toggle-button:hover {
+    background-color: var(--accent-color);
+    color: var(--main-bg-color); /* Or a specific hover text color */
+}
+
+.button-like {
+    display: inline-block;
+    background-color: var(--secondary-action-bg-color);
+    color: var(--secondary-action-text-color);
+    padding: 10px 15px;
+    border-radius: 4px;
+    text-decoration: none;
+    margin-left: 10px;
+}
+.button-like:hover {
+    background-color: var(--secondary-action-hover-bg-color);
+    text-decoration: none;
+    color: var(--secondary-action-text-color);
 }
