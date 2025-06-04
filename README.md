@@ -66,4 +66,4 @@ jules-todo-list/
 
 ---
 
-Desenvolvido por [Seu Nome] em parceria com a IA Jules e o Copilot do Visual Studio Code.
+Desenvolvido por Rodukao em parceria com a IA Jules e o Copilot do Visual Studio Code.
