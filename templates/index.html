@@ -3,75 +3,310 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minhas Tarefas</title>
-    <!-- Importando a fonte Open Sans do Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
-    <!-- Link para o arquivo CSS externo -->
+    <title>Jules Todo List - Novo Layout</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='estilo.css') }}">
 </head>
 <body>
-<div class="container">
-    <!-- Left Column -->
-    <div class="left-column">
-        <h2>Adicionar Tarefa</h2>
-        <form method="POST" action="{{ url_for('add_task') }}">
-            <div class="form-group">
-                <label for="title">Título</label>
-                <input type="text" id="title" name="title" required>
-            </div>
-            <div class="form-group">
-                <label for="description">Descrição</label>
-                <textarea id="description" name="description"></textarea>
-            </div>
-            <div class="form-group">
-                <label for="due_date">Data de Vencimento</label>
-                <input type="date" id="due_date" name="due_date">
-            </div>
-            <div class="form-group">
-                <label for="priority">Prioridade</label>
-                <select id="priority" name="priority">
-                    <option value="High" class="priority-high">Alta</option>
-                    <option value="Medium" class="priority-medium">Média</option>
-                    <option value="Low" class="priority-low">Baixa</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <button type="submit">Adicionar</button>
-            </div>
+<div class="main-layout">
+    <!-- Mobile Menu Button -->
+    <button class="menu-btn" id="openSidebarBtn" aria-label="Abrir menu">☰</button>
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebarMenu">
+        <h2>Menu</h2>
+        <form method="GET" action="{{ url_for('view_tasks') }}" class="search-form">
+            <span class="search-icon">
+                <img src="{{ url_for('static', filename='icons/pesquisar.svg') }}" alt="Pesquisar" style="width:18px;height:18px;vertical-align:middle;opacity:0.7;">
+            </span>
+            <input type="text" class="search-bar" name="search_query" placeholder="Procurar" value="{{ current_search_query or '' }}">
         </form>
-        <div class="filters">
-            <h2>Filtros</h2>
-            <a href="{{ url_for('view_tasks', status_filter='all', date_filter='all') }}" class="{{ 'active' if current_status_filter == 'all' and current_date_filter == 'all' else '' }}">Todas</a>
-            <a href="{{ url_for('view_tasks', status_filter='pending', date_filter='today') }}" class="{{ 'active' if current_status_filter == 'pending' and current_date_filter == 'today' else '' }}">Hoje</a>
-            <a href="{{ url_for('view_tasks', status_filter='pending', date_filter='next_7_days') }}" class="{{ 'active' if current_status_filter == 'pending' and current_date_filter == 'next_7_days' else '' }}">Próximos 7 Dias</a>
-            <a href="{{ url_for('view_tasks', status_filter='pending', date_filter='overdue') }}" class="{{ 'active' if current_status_filter == 'pending' and current_date_filter == 'overdue' else '' }}">Vencidas</a>
-            <a href="{{ url_for('view_tasks', status_filter='completed', date_filter='all') }}" class="{{ 'active' if current_status_filter == 'completed' and current_date_filter == 'all' else '' }}">Concluídas</a>
+        <div class="sidebar-section">
+            <div class="sidebar-title">Filtros</div>
+            <div class="sidebar-item main">
+                <div>
+                    <img src="{{ url_for('static', filename='icons/seta_direita.svg') }}" alt="Seta" class="filtro-icone">
+                    <a href="{{ url_for('view_tasks', status_filter='pending', date_filter='all') }}" class="filtro-link{% if current_status_filter == 'pending' and current_date_filter == 'all' %} active{% endif %}">
+                        Pendentes
+                    </a>
+                </div>
+                <span class="badge">{{ counts.pendentes }}</span>
+            </div>
+            <div class="sidebar-item main">
+                <div>
+                    <img src="{{ url_for('static', filename='icons/hoje.svg') }}" alt="Seta" class="filtro-icone">
+                    <a href="{{ url_for('view_tasks', status_filter='pending', date_filter='today') }}" class="filtro-link{% if current_status_filter == 'pending' and current_date_filter == 'today' %} active{% endif %}">
+                        Hoje
+                    </a>
+                </div>
+                <span class="badge">{{ counts.hoje }}</span>
+            </div>
+            <div class="sidebar-item main">
+                <div>
+                    <img src="{{ url_for('static', filename='icons/seta_direita.svg') }}" alt="Seta" class="filtro-icone">
+                    <a href="{{ url_for('view_tasks', status_filter='pending', date_filter='next_7_days') }}" class="filtro-link{% if current_status_filter == 'pending' and current_date_filter == 'next_7_days' %} active{% endif %}">
+                        Próximos 7 Dias
+                    </a>
+                </div>
+                <span class="badge">{{ counts.proximos_7 }}</span>
+            </div>
+            <div class="sidebar-item main">
+                <div>
+                    <img src="{{ url_for('static', filename='icons/vencidas.svg') }}" alt="Seta" class="filtro-icone">
+                    <a href="{{ url_for('view_tasks', status_filter='pending', date_filter='overdue') }}" class="filtro-link{% if current_status_filter == 'pending' and current_date_filter == 'overdue' %} active{% endif %}">
+                        Vencidas
+                    </a>
+                </div>
+                <span class="badge">{{ counts.vencidas }}</span>
+            </div>
+            <div class="sidebar-item main">
+                <div>
+                    <img src="{{ url_for('static', filename='icons/concluidas.svg') }}" alt="Seta" class="filtro-icone">
+                    <a href="{{ url_for('view_tasks', status_filter='completed', date_filter='all') }}" class="filtro-link{% if current_status_filter == 'completed' and current_date_filter == 'all' %} active{% endif %}">
+                        Concluídas
+                    </a>
+                </div>
+                <span class="badge">{{ counts.concluidas }}</span>
+            </div>
         </div>
-    </div>
-
-    <!-- Right Column -->
-    <div class="right-column">
-        <h2>Tarefas</h2>
-        <div class="task-list">
-            {% for task in tasks %}
-            <div class="task-item {% if task.status == 'Completed' %}completed{% endif %}">
-                <input type="checkbox" onchange="location.href='/toggle_complete/{{ task.id }}'" {% if task.status == 'Completed' %}checked{% endif %}>
-                <span class="task-title">{{ task.title }}</span>
-                <span class="task-date">{{ task.due_date.strftime('%b %d') if task.due_date else 'Sem Data' }}</span>
-                <span class="priority-label priority-{{ task.priority.lower() }}">
-                    {% if task.priority == 'High' %}Alta{% elif task.priority == 'Medium' %}Média{% elif task.priority == 'Low' %}Baixa{% endif %}
-                </span>
-                <a href="/edit/{{ task.id }}">
-                    <img src="{{ url_for('static', filename='icons/editar.svg') }}" alt="Editar" style="width: 25px; height: 25px; margin-top: 5px; margin-left: 15px;">
-                </a>
-                <a href="/delete_task/{{ task.id }}">
-                    <img src="{{ url_for('static', filename='icons/lixeira.svg') }}" alt="Deletar" style="width: 25px; height: 25px; margin-top: 5px;">
-                </a>
+        <div class="sidebar-section">
+            <div class="sidebar-title">Listas</div>
+            {% for lista in all_lists %}
+            <div class="sidebar-item">
+                <div>
+                    <span class="lista-color-box" style="background-color: {{ lista.color or '#666' }};"></span>
+                    <a href="{{ url_for('view_tasks', list_id=lista.id) }}" class="filtro-link{% if selected_list_id == lista.id %} active{% endif %}">
+                        {{ lista.name }}
+                    </a>
+                </div> 
+                <span class="badge">{{ counts.listas[lista.id] if counts.listas[lista.id] else 0 }}</span>
             </div>
             {% endfor %}
+            <button class="add-btn" type="button" onclick="window.location='?show_add_list=1'">+ Add nova lista</button>
         </div>
-    </div>
+        <div style="margin-top: auto; text-align: center; padding-top: 24px;">
+            <img src="{{ url_for('static', filename='imgs/roduapps-logo.svg') }}" alt="Logo Jules Todo List" style="max-width: 120px; opacity: 0.7;" />
+        </div>
+    </aside>
+    <!-- Center Column -->
+    <main class="task-list-col" id="mainCol">
+        <div class="task-list-header">
+            <span class="task-list-title">{{ page_title or 'Tarefas' }}</span>
+            <span class="task-list-count">{{ tasks|length }}</span>
+        </div>
+        <form method="GET" action="{{ url_for('view_tasks') }}" style="margin-bottom: 18px;">
+            <button class="add-btn add-task" type="submit">+ Nova tarefa</button>
+        </form>
+        <ul class="task-list">
+            {% for task in tasks %}
+            <li class="task-item {% if selected_task and selected_task.id == task.id %}selected{% endif %}">
+                <div class="task-row">
+                    <form method="POST" action="{{ url_for('toggle_complete', task_id=task.id) }}" style="display:inline;">
+                        <input type="checkbox" name="done" onchange="this.form.submit()" {% if task.status == 'Completed' %}checked{% endif %}>
+                    </form>
+                    <a href="{{ url_for('view_tasks', selected=task.id) }}" class="task-title-link show-detail">
+                        <span class="task-title">{{ task.title }}</span>
+                        <img src="{{ url_for('static', filename='icons/seta_edit.svg') }}" alt="Editar" class="seta-edit-icone">
+                    </a>
+                </div>
+                <div class="task-meta">
+                    {% if task.due_date %}Vence em {{ task.due_date.strftime('%d/%m/%Y') }}{% endif %}
+                    {% if task.priority %} <span class="tag">{{ task.priority }}</span>{% endif %}
+                    {% if task.list_id %}
+                        {% set lista = all_lists|selectattr('id', 'equalto', task.list_id)|first %}
+                        {% if lista %}
+                        <div>
+                            <span class="lista-color-box" style="background: {{ lista.color if lista.color else '#666' }};"></span>
+                            <span class="lista-nome-task">{{ lista.name }}</span>
+                        </div>   
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </main>
+    <!-- Right Column -->
+    <aside class="task-detail-col" id="detailCol">
+        <button class="back-btn" id="backToMainBtn" type="button">&larr; Voltar</button>
+        {% if request.args.get('show_add_list') %}
+        <div class="task-detail-card">
+            <form class="task-form" method="POST" action="{{ url_for('add_list') }}">
+                <div>
+                    <div class="task-detail-title"><h2>Nova Lista</h2></div>
+                    <div class="task-detail-field">
+                        <input type="text" name="name" placeholder="Nome da lista" required />
+                    </div>
+                    <div class="task-detail-field">
+                        <input type="text" name="description" placeholder="Descrição" />
+                    </div>
+                    <div class="task-detail-field">
+                        <label>Cor</label>
+                        <input type="color" name="color" value="#6666ff" style="width: 40px; height: 40px; border: none; background: none;" />
+                    </div>
+                </div>
+                <div class="task-detail-actions">
+                    <button class="save-btn" type="submit">Salvar Lista</button>
+                </div>
+            </form>
+        </div>
+        {% elif selected_list %}
+        <div class="task-detail-card">
+            <form class="task-form" method="POST" action="{{ url_for('edit_list', list_id=selected_list.id) }}">
+                <div>
+                    <div class="task-detail-title"><h2>Editar Lista</h2></div>
+                    <div class="task-detail-field">
+                        <input type="text" name="name" value="{{ selected_list.name }}" placeholder="Nome da lista" required />
+                    </div>
+                    <div class="task-detail-field">
+                        <input type="text" name="description" value="{{ selected_list.description }}" placeholder="Descrição" />
+                    </div>
+                    <div class="task-detail-field">
+                        <label>Cor</label>
+                        <input type="color" name="color" value="{{ selected_list.color if selected_list.color else '#6666ff' }}" style="width: 40px; height: 40px; border: none; background: none;" />
+                    </div>
+                </div>
+                <div class="task-detail-actions">
+                    <a href="{{ url_for('delete_list', list_id=selected_list.id) }}" class="delete-btn">Apagar Lista</a>
+                    <button class="save-btn" type="submit">Salvar Alterações</button>
+                </div>
+            </form>
+        </div>
+        {% elif selected_task %}
+        <div class="task-detail-card">
+            <form class="task-form" method="POST" action="{{ url_for('edit_task', task_id=selected_task.id) }}">
+                <div>
+                    <div class="task-detail-title"><h2>{{ selected_task.title }}</h2></div>
+                    <div class="task-detail-field">
+                        <input type="text" name="description" placeholder="Description" value="{{ selected_task.description }}"/>
+                    </div>
+                    <div class="task-detail-field">
+                        <label>Due date</label>
+                        <input type="date" name="due_date" value="{{ selected_task.due_date }}"/>
+                    </div>
+                    <div class="task-detail-field">
+                        <label>Prioridade</label>
+                        <select name="priority">
+                            <option value="High" {% if selected_task.priority == 'High' %}selected{% endif %}>Alta</option>
+                            <option value="Medium" {% if selected_task.priority == 'Medium' %}selected{% endif %}>Média</option>
+                            <option value="Low" {% if selected_task.priority == 'Low' %}selected{% endif %}>Baixa</option>
+                        </select>
+                    </div>
+                    <div class="task-detail-field">
+                        <label>Lista</label>
+                        <select name="list_id">
+                            <option value="">Sem lista</option>
+                            {% for lista in all_lists %}
+                            <option value="{{ lista.id }}" {% if selected_task and selected_task.list_id == lista.id %}selected{% endif %}>{{ lista.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="task-detail-actions">
+                    <a href="{{ url_for('delete_task', task_id=selected_task.id) }}" class="delete-btn">Apagar Tarefa</a>
+                    <button class="save-btn" type="submit">Salvar Alterações</button>
+                </div>
+            </form>
+        </div>
+        {% else %}
+        <div class="task-detail-card">
+            <form class="task-form" method="POST" action="{{ url_for('add_task') }}">
+                <div>
+                    <div class="task-detail-title"><h2>Adicionar Nova Tarefa</h2></div>
+                    <div class="task-detail-field">
+                        <input type="text" name="title" placeholder="Título da tarefa" required />
+                    </div>
+                    <div class="task-detail-field">
+                        <input type="text" name="description" placeholder="Descrição" />
+                    </div>
+                    <div class="task-detail-field">
+                        <label>Data de Vencimento</label>
+                        <input type="date" name="due_date" />
+                    </div>
+                    <div class="task-detail-field">
+                        <label>Prioridade</label>
+                        <select name="priority">
+                            <option value="High">Alta</option>
+                            <option value="Medium" selected>Média</option>
+                            <option value="Low">Baixa</option>
+                        </select>
+                    </div>
+                    <div class="task-detail-field">
+                        <label>Lista</label>
+                        <select name="list_id">
+                            <option value="">Sem lista</option>
+                            {% for lista in all_lists %}
+                            <option value="{{ lista.id }}">{{ lista.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="task-detail-actions">
+                    <button class="save-btn" type="submit">Adicionar Tarefa</button>
+                </div>
+            </form>
+        </div>
+        {% endif %}
+    </aside>
 </div>
-<script src="{{ url_for('static', filename='theme.js') }}" defer></script>
+<script>
+// Mobile menu logic
+const openSidebarBtn = document.getElementById('openSidebarBtn');
+const sidebarMenu = document.getElementById('sidebarMenu');
+const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+const detailCol = document.getElementById('detailCol');
+const backToMainBtn = document.getElementById('backToMainBtn');
+const mainCol = document.getElementById('mainCol');
+
+function openSidebar() {
+    sidebarMenu.classList.add('open');
+    sidebarBackdrop.classList.add('active');
+}
+function closeSidebar() {
+    sidebarMenu.classList.remove('open');
+    sidebarBackdrop.classList.remove('active');
+}
+openSidebarBtn.addEventListener('click', openSidebar);
+sidebarBackdrop.addEventListener('click', closeSidebar);
+
+// Show detail panel on mobile
+function openDetail() {
+    detailCol.classList.add('open');
+    mainCol.style.display = 'none';
+}
+function closeDetail() {
+    detailCol.classList.remove('open');
+    mainCol.style.display = '';
+}
+if (backToMainBtn) {
+    backToMainBtn.addEventListener('click', closeDetail);
+}
+// Show detail when clicking on task or list links
+[...document.querySelectorAll('.show-detail')].forEach(el => {
+    el.addEventListener('click', function(e) {
+        if (window.innerWidth <= 900) {
+            setTimeout(openDetail, 100); // wait for navigation
+        }
+    });
+});
+[...document.querySelectorAll('.sidebar .filtro-link')].forEach(el => {
+    el.addEventListener('click', function(e) {
+        if (window.innerWidth <= 900) {
+            setTimeout(openDetail, 100);
+            closeSidebar();
+        }
+    });
+});
+[...document.querySelectorAll('.sidebar .lista-link')].forEach(el => {
+    el.addEventListener('click', function(e) {
+        if (window.innerWidth <= 900) {
+            setTimeout(openDetail, 100);
+            closeSidebar();
+        }
+    });
+});
+</script>
 </body>
 </html>
