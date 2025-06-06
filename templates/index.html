@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jules Todo List - Novo Layout</title>
+    <title>Rodukao Todo List</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap" rel="stylesheet">
@@ -12,7 +12,9 @@
 <body>
 <div class="main-layout">
     <!-- Mobile Menu Button -->
-    <button class="menu-btn" id="openSidebarBtn" aria-label="Abrir menu">☰</button>
+    <button class="menu-btn" id="openSidebarBtn" aria-label="Abrir menu">
+        <span id="menuIcon">☰</span>
+    </button>
     <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
     <!-- Sidebar -->
     <aside class="sidebar" id="sidebarMenu">
@@ -84,7 +86,7 @@
                 <span class="badge">{{ counts.listas[lista.id] if counts.listas[lista.id] else 0 }}</span>
             </div>
             {% endfor %}
-            <button class="add-btn" type="button" onclick="window.location='?show_add_list=1'">+ Add nova lista</button>
+            <button class="add-btn show-detail" type="button" onclick="window.location='?show_add_list=1'">+ Add nova lista</button>
         </div>
         <div style="margin-top: auto; text-align: center; padding-top: 24px;">
             <img src="{{ url_for('static', filename='imgs/roduapps-logo.svg') }}" alt="Logo Jules Todo List" style="max-width: 120px; opacity: 0.7;" />
@@ -96,9 +98,9 @@
             <span class="task-list-title">{{ page_title or 'Tarefas' }}</span>
             <span class="task-list-count">{{ tasks|length }}</span>
         </div>
-        <form method="GET" action="{{ url_for('view_tasks') }}" style="margin-bottom: 18px;">
-            <button class="add-btn add-task" type="submit">+ Nova tarefa</button>
-        </form>
+        <div style="margin-bottom: 18px;">
+            <button class="add-btn add-task show-detail" type="button" onclick="window.location='?show_add_task=1'">+ Nova tarefa</button>
+        </div>
         <ul class="task-list">
             {% for task in tasks %}
             <li class="task-item {% if selected_task and selected_task.id == task.id %}selected{% endif %}">
@@ -112,7 +114,13 @@
                     </a>
                 </div>
                 <div class="task-meta">
-                    {% if task.due_date %}Vence em {{ task.due_date.strftime('%d/%m/%Y') }}{% endif %}
+                    {% if task.due_date %}
+                        {% if task.due_date < today %}
+                            Venceu em {{ task.due_date.strftime('%d/%m/%Y') }}
+                        {% else %}
+                            Vence em {{ task.due_date.strftime('%d/%m/%Y') }}
+                        {% endif %}
+                    {% endif %}
                     {% if task.priority %} <span class="tag">{{ task.priority }}</span>{% endif %}
                     {% if task.list_id %}
                         {% set lista = all_lists|selectattr('id', 'equalto', task.list_id)|first %}
@@ -130,7 +138,7 @@
     </main>
     <!-- Right Column -->
     <aside class="task-detail-col" id="detailCol">
-        <button class="back-btn" id="backToMainBtn" type="button">&larr; Voltar</button>
+        <button class="back-btn" id="backToMainBtn" type="button">Voltar</button>
         {% if request.args.get('show_add_list') %}
         <div class="task-detail-card">
             <form class="task-form" method="POST" action="{{ url_for('add_list') }}">
@@ -152,65 +160,7 @@
                 </div>
             </form>
         </div>
-        {% elif selected_list %}
-        <div class="task-detail-card">
-            <form class="task-form" method="POST" action="{{ url_for('edit_list', list_id=selected_list.id) }}">
-                <div>
-                    <div class="task-detail-title"><h2>Editar Lista</h2></div>
-                    <div class="task-detail-field">
-                        <input type="text" name="name" value="{{ selected_list.name }}" placeholder="Nome da lista" required />
-                    </div>
-                    <div class="task-detail-field">
-                        <input type="text" name="description" value="{{ selected_list.description }}" placeholder="Descrição" />
-                    </div>
-                    <div class="task-detail-field">
-                        <label>Cor</label>
-                        <input type="color" name="color" value="{{ selected_list.color if selected_list.color else '#6666ff' }}" style="width: 40px; height: 40px; border: none; background: none;" />
-                    </div>
-                </div>
-                <div class="task-detail-actions">
-                    <a href="{{ url_for('delete_list', list_id=selected_list.id) }}" class="delete-btn">Apagar Lista</a>
-                    <button class="save-btn" type="submit">Salvar Alterações</button>
-                </div>
-            </form>
-        </div>
-        {% elif selected_task %}
-        <div class="task-detail-card">
-            <form class="task-form" method="POST" action="{{ url_for('edit_task', task_id=selected_task.id) }}">
-                <div>
-                    <div class="task-detail-title"><h2>{{ selected_task.title }}</h2></div>
-                    <div class="task-detail-field">
-                        <input type="text" name="description" placeholder="Description" value="{{ selected_task.description }}"/>
-                    </div>
-                    <div class="task-detail-field">
-                        <label>Due date</label>
-                        <input type="date" name="due_date" value="{{ selected_task.due_date }}"/>
-                    </div>
-                    <div class="task-detail-field">
-                        <label>Prioridade</label>
-                        <select name="priority">
-                            <option value="High" {% if selected_task.priority == 'High' %}selected{% endif %}>Alta</option>
-                            <option value="Medium" {% if selected_task.priority == 'Medium' %}selected{% endif %}>Média</option>
-                            <option value="Low" {% if selected_task.priority == 'Low' %}selected{% endif %}>Baixa</option>
-                        </select>
-                    </div>
-                    <div class="task-detail-field">
-                        <label>Lista</label>
-                        <select name="list_id">
-                            <option value="">Sem lista</option>
-                            {% for lista in all_lists %}
-                            <option value="{{ lista.id }}" {% if selected_task and selected_task.list_id == lista.id %}selected{% endif %}>{{ lista.name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
-                <div class="task-detail-actions">
-                    <a href="{{ url_for('delete_task', task_id=selected_task.id) }}" class="delete-btn">Apagar Tarefa</a>
-                    <button class="save-btn" type="submit">Salvar Alterações</button>
-                </div>
-            </form>
-        </div>
-        {% else %}
+        {% elif request.args.get('show_add_task') %}
         <div class="task-detail-card">
             <form class="task-form" method="POST" action="{{ url_for('add_task') }}">
                 <div>
@@ -248,6 +198,64 @@
                 </div>
             </form>
         </div>
+        {% elif selected_list %}
+        <div class="task-detail-card">
+            <form class="task-form" method="POST" action="{{ url_for('edit_list', list_id=selected_list.id) }}">
+                <div>
+                    <div class="task-detail-title"><h2>Editar Lista</h2></div>
+                    <div class="task-detail-field">
+                        <input type="text" name="name" value="{{ selected_list.name }}" placeholder="Nome da lista" required />
+                    </div>
+                    <div class="task-detail-field">
+                        <input type="text" name="description" value="{{ selected_list.description }}" placeholder="Descrição" />
+                    </div>
+                    <div class="task-detail-field">
+                        <label>Cor</label>
+                        <input type="color" name="color" value="{{ selected_list.color if selected_list.color else '#6666ff' }}" style="width: 40px; height: 40px; border: none; background: none;" />
+                    </div>
+                </div>
+                <div class="task-detail-actions">
+                    <a href="{{ url_for('delete_list', list_id=selected_list.id) }}" class="delete-btn">Apagar Lista</a>
+                    <button class="save-btn" type="submit">Salvar Alterações</button>
+                </div>
+            </form>
+        </div>
+        {% elif selected_task %}
+        <div class="task-detail-card">
+            <form class="task-form" method="POST" action="{{ url_for('edit_task', task_id=selected_task.id) }}">
+                <div>
+                    <div class="task-detail-title"><h2>{{ selected_task.title }}</h2></div>
+                    <div class="task-detail-field">
+                        <input type="text" name="description" placeholder="Description" value="{{ selected_task.description }}"/>
+                    </div>
+                    <div class="task-detail-field">
+                        <label>Data de vencimento</label>
+                        <input type="date" name="due_date" value="{{ selected_task.due_date }}"/>
+                    </div>
+                    <div class="task-detail-field">
+                        <label>Prioridade</label>
+                        <select name="priority">
+                            <option value="High" {% if selected_task.priority == 'High' %}selected{% endif %}>Alta</option>
+                            <option value="Medium" {% if selected_task.priority == 'Medium' %}selected{% endif %}>Média</option>
+                            <option value="Low" {% if selected_task.priority == 'Low' %}selected{% endif %}>Baixa</option>
+                        </select>
+                    </div>
+                    <div class="task-detail-field">
+                        <label>Lista</label>
+                        <select name="list_id">
+                            <option value="">Sem lista</option>
+                            {% for lista in all_lists %}
+                            <option value="{{ lista.id }}" {% if selected_task and selected_task.list_id == lista.id %}selected{% endif %}>{{ lista.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="task-detail-actions">
+                    <a href="{{ url_for('delete_task', task_id=selected_task.id) }}" class="delete-btn">Apagar Tarefa</a>
+                    <button class="save-btn" type="submit">Salvar Alterações</button>
+                </div>
+            </form>
+        </div>
         {% endif %}
     </aside>
 </div>
@@ -268,17 +276,14 @@ function closeSidebar() {
     sidebarMenu.classList.remove('open');
     sidebarBackdrop.classList.remove('active');
 }
-openSidebarBtn.addEventListener('click', openSidebar);
 sidebarBackdrop.addEventListener('click', closeSidebar);
 
 // Show detail panel on mobile
 function openDetail() {
     detailCol.classList.add('open');
-    mainCol.style.display = 'none';
 }
 function closeDetail() {
     detailCol.classList.remove('open');
-    mainCol.style.display = '';
 }
 if (backToMainBtn) {
     backToMainBtn.addEventListener('click', closeDetail);
@@ -287,6 +292,7 @@ if (backToMainBtn) {
 [...document.querySelectorAll('.show-detail')].forEach(el => {
     el.addEventListener('click', function(e) {
         if (window.innerWidth <= 900) {
+            // Não previne navegação, só mostra o painel se já estiver na página correta
             setTimeout(openDetail, 100); // wait for navigation
         }
     });
@@ -307,6 +313,46 @@ if (backToMainBtn) {
         }
     });
 });
+
+function updateMenuIcon() {
+    const icon = document.getElementById('menuIcon');
+    if (sidebarMenu.classList.contains('open')) {
+        icon.textContent = '✕'; // ícone de fechar
+        openSidebarBtn.setAttribute('aria-label', 'Fechar menu');
+    } else {
+        icon.textContent = '☰'; // ícone de menu
+        openSidebarBtn.setAttribute('aria-label', 'Abrir menu');
+    }
+}
+openSidebarBtn.addEventListener('click', function() {
+    if (sidebarMenu.classList.contains('open')) {
+        closeSidebar();
+    } else {
+        openSidebar();
+    }
+    updateMenuIcon();
+});
+sidebarBackdrop.addEventListener('click', function() {
+    closeSidebar();
+    updateMenuIcon();
+});
+// Atualiza ícone ao fechar pelo JS
+sidebarMenu.addEventListener('transitionend', updateMenuIcon);
+// Garante que o ícone está correto ao carregar a página
+updateMenuIcon();
+
+// Abre painel de detalhes automaticamente no mobile se for add task/list ou editar tarefa/lista
+if (window.innerWidth <= 900) {
+    const params = new URLSearchParams(window.location.search);
+    if (
+        params.has('show_add_task') ||
+        params.has('show_add_list') ||
+        params.has('selected') ||
+        params.has('list_id') && !params.has('show_add_list') // para edição de lista
+    ) {
+        openDetail();
+    }
+}
 </script>
 </body>
 </html>

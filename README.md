@@ -1,69 +1,83 @@
 # Jules Todo List
 
-Jules Todo List é um gerenciador de tarefas moderno, responsivo e colaborativo, desenvolvido em parceria com a IA Jules e o GitHub Copilot do Visual Studio Code.
+Jules Todo List é um aplicativo web de lista de tarefas moderno, responsivo e otimizado para uso em desktop e mobile, desenvolvido com Flask.
 
 ## Funcionalidades
 
-- **Adicionar, editar e excluir tarefas** com título, descrição, data de vencimento, prioridade e associação a listas.
-- **Marcar tarefas como concluídas ou pendentes** diretamente na lista.
-- **Filtros inteligentes** na barra lateral:
-  - Pendentes
-  - Hoje
-  - Próximos 7 Dias
-  - Vencidas
-  - Concluídas
-- **Contadores de tarefas** ao lado de cada filtro e lista, mostrando a quantidade de tarefas correspondente.
-- **Listas personalizadas**:
-  - Crie, edite e exclua listas.
-  - Cada lista pode ter nome, descrição e cor personalizada.
-  - Ao excluir uma lista, as tarefas associadas permanecem (ficam sem lista).
-- **Visualização de tarefas por lista**: clique em uma lista para filtrar as tarefas e editar suas informações.
-- **Pesquisa de tarefas** por título ou descrição.
-- **Design responsivo**:
-  - No mobile, a coluna central é exibida por padrão, com botão de menu para abrir a barra lateral.
-  - Ao clicar em uma tarefa ou lista, a coluna de detalhes aparece como overlay, com botão de voltar.
-- **Interface moderna** com ícones, cores e navegação fluida.
+- Criação, edição e exclusão de tarefas
+- Organização de tarefas em listas
+- Painel de detalhes (drawer) para tarefas e listas
+- Filtros por status (hoje, vencidas, concluídas, etc.)
+- Busca rápida
+- Interface responsiva e experiência mobile aprimorada
+- Temas claros e escuros (theme.js)
+- Usabilidade otimizada: drawer abre automaticamente ao adicionar/editar
 
-## Instalação e uso
+## Instalação
+
+### Pré-requisitos
+
+- Python 3.10+
+- pip
+
+### Passos
 
 1. Clone o repositório:
+
    ```sh
-   git clone https://github.com/seu-usuario/jules-todo-list.git
+   git clone <url-do-repositorio>
    cd jules-todo-list
    ```
-2. Crie e ative um ambiente virtual:
+
+2. Crie um ambiente virtual (opcional, mas recomendado):
+
    ```sh
    python -m venv venv
    venv\Scripts\activate  # Windows
    # ou
    source venv/bin/activate  # Linux/Mac
    ```
+
 3. Instale as dependências:
-   ```sh
-   pip install -r requirements.txt
-   ```
-4. Execute a aplicação:
-   ```sh
-   python app.py
-   ```
-5. Acesse em [http://localhost:5000](http://localhost:5000)
 
-## Estrutura do Projeto
+   ```sh
+   pip install flask
+   ```
 
-```
-jules-todo-list/
-├── app.py                # Backend Flask
-├── static/               # CSS, JS, ícones
-├── templates/            # Templates HTML
-├── instance/tasks.db     # Banco de dados SQLite (criado automaticamente)
-├── README.md             # Este arquivo
-```
+4. Execute o app:
+
+   ```sh
+   flask run
+   ```
+
+   O app estará disponível em http://127.0.0.1:5000
+
+## Estrutura dos Arquivos
+
+- `app.py` — Backend Flask, rotas e lógica principal
+- `static/estilo.css` — Estilos modernos e responsivos
+- `static/theme.js` — Alternância de tema (claro/escuro)
+- `templates/` — Templates HTML (Jinja2)
+  - `index.html` — Página principal
+  - `add_task.html`, `edit_task.html`, `edit_tasks.html` — Formulários
+- `instance/tasks.db` — Banco de dados SQLite (criado automaticamente)
 
 ## Observações
-- Ao excluir uma lista, as tarefas associadas permanecem (ficam sem lista).
+
 - O banco de dados é criado automaticamente na primeira execução.
-- O projeto é para uso local/desenvolvimento. Para produção, configure variáveis de ambiente e segurança adequadas.
+- Para resetar, basta apagar o arquivo `instance/tasks.db`.
+- O app é totalmente responsivo: utilize em desktop ou mobile.
+- Arquivos e estilos não utilizados foram removidos para facilitar manutenção.
+
+## Personalização
+
+- Para alterar o tema, edite `static/theme.js`.
+- Para customizar estilos, edite `static/estilo.css` (comentários explicativos no arquivo).
+
+## Dúvidas ou Contribuições
+
+Abra uma issue ou envie um pull request!
 
 ---
 
-Desenvolvido por [Seu Nome] em parceria com a IA Jules e o Copilot do Visual Studio Code.
+Desenvolvido por Rodukao — 2025
