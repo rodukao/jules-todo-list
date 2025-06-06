@@ -16,40 +16,31 @@ Jules Todo List é um aplicativo web de lista de tarefas moderno, responsivo e o
 ## Instalação
 
 ### Pré-requisitos
-
 - Python 3.10+
 - pip
 
 ### Passos
 
 1. Clone o repositório:
-
    ```sh
-   git clone <url-do-repositorio>
+   git clone https://github.com/rodukao/jules-todo-list.git
    cd jules-todo-list
    ```
-
 2. Crie um ambiente virtual (opcional, mas recomendado):
-
    ```sh
    python -m venv venv
    venv\Scripts\activate  # Windows
    # ou
    source venv/bin/activate  # Linux/Mac
    ```
-
 3. Instale as dependências:
-
    ```sh
    pip install flask
    ```
-
 4. Execute o app:
-
    ```sh
    flask run
    ```
-
    O app estará disponível em http://127.0.0.1:5000
 
 ## Estrutura dos Arquivos
@@ -68,6 +59,7 @@ Jules Todo List é um aplicativo web de lista de tarefas moderno, responsivo e o
 - Para resetar, basta apagar o arquivo `instance/tasks.db`.
 - O app é totalmente responsivo: utilize em desktop ou mobile.
 - Arquivos e estilos não utilizados foram removidos para facilitar manutenção.
+- O projeto é para uso local/desenvolvimento. Para produção, configure variáveis de ambiente e segurança adequadas.
 
 ## Personalização
 
